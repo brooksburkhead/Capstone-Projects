@@ -1,3 +1,4 @@
+```python
 # triage_app.py — run locally:  python -m streamlit run triage_app.py
 import streamlit as st
 import json
@@ -143,10 +144,10 @@ else:
                f"({sf['population_vintage']})")
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Expected ED encounters / yr", f"{sf['annual_ed_encounters']:,}")
-    c2.metric("Per day", sf['encounters_per_day'])
-    c3.metric("Admission-level acuity / yr", f"{sf['admission_level_per_year']:,}")
-    c4.metric("Transfer-level / yr", f"{sf['transfer_level_per_year']:,}")
+    c1.metric("Expected ED Encounters / Yr", f"{sf['annual_ed_encounters']:,}")
+    c2.metric("Per Day", sf['encounters_per_day'])
+    c3.metric("Admission-Level Acuity / Yr", f"{sf['admission_level_per_year']:,}")
+    c4.metric("Transfer-Level / Yr", f"{sf['transfer_level_per_year']:,}")
 
     st.subheader("Annual encounter value envelope")
     st.caption("Admission-level encounters only (11.5% of visits, NHAMCS 2022). "
@@ -176,3 +177,5 @@ else:
     st.subheader("Caveats (stated, not hidden)")
     for cv in sf['caveats']:
         st.markdown(f"- {cv}")
+
+```

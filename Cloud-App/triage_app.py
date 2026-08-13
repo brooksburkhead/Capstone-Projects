@@ -26,7 +26,21 @@ view = st.sidebar.radio("View", ["Patient Triage", "Site Sustainability"])
 
 if view == "Patient Triage":
     # --- Patient selector ---
-    case = st.sidebar.radio("Select patient case", list(cohort.keys()))
+    # Map raw dictionary keys to properly capitalized display labels
+    case_display_map = {
+        "Pediatric": "Pediatric",
+        "Healthy adult": "Healthy Adult",
+        "Complex geriatric": "Complex Geriatric",
+        "Allergy carrier": "Allergy Carrier",
+        "High medication": "High Medication",
+    }
+    reverse_case_map = {v: k for k, v in case_display_map.items()}
+    
+    selected_display_case = st.sidebar.radio(
+        "Select Patient Case", 
+        list(case_display_map.values())
+    )
+    case = reverse_case_map[selected_display_case]
     p = cohort[case]
 
     # --- Header ---
@@ -34,10 +48,10 @@ if view == "Patient Triage":
     c1, c2, c3 = st.columns(3)
     c1.metric("Age", p['age'])
     c2.metric("Sex", p['gender'].capitalize())
-    c3.metric("Active conditions", len(p['conditions']))
+    c3.metric("Active Conditions", len(p['conditions']))
 
     # --- Safety flags FIRST (most important) ---
-    st.subheader("Safety flags")
+    st.subheader("Safety Flags")
     if not p['flags']:
         st.success("No flags — record clear")
     for fl in p['flags']:
@@ -70,7 +84,7 @@ if view == "Patient Triage":
     # --- Conditions & meds side by side ---
     col_a, col_b = st.columns(2)
     with col_a:
-        st.subheader(f"Active problems ({len(p['conditions'])})")
+        st.subheader(f"Active Problems ({len(p['conditions'])})")
         for c in p['conditions']:
             st.write(f"• {c}")
     with col_b:
@@ -94,12 +108,12 @@ if view == "Patient Triage":
     try:
         with open(APP_DIR / 'reimbursement_estimates.json') as f:
             est_file = json.load(f)
-        est_src = "diagnostic notebook output"
+        est_src = "Diagnostic Notebook Output"
     except FileNotFoundError:
         est_file = {}
-        est_src = "4 Aug 2026 cohort run (documented record)"
+        est_src = "4 Aug 2026 Cohort Run (Documented Record)"
 
-    st.subheader("Encounter value estimate")
+    st.subheader("Encounter Value Estimate")
     st.caption("**Estimate of clinical resource intensity — NOT payment.** "
                "MDC-level approximation; CAHs and REHs are cost-reimbursed. "
                f"Source: {est_src}.")
@@ -137,7 +151,7 @@ else:
                 "`site_feasibility.json`, then place it beside this app.")
         st.stop()
 
-    st.header(f"Candidate site: {sf['site']}")
+    st.header(f"Candidate Site: {sf['site']}")
     st.caption(f"MCDA rank #1 under equity and balanced weightings · "
                f"population {sf['county_population']:,} "
                f"({sf['population_vintage']})")
@@ -145,10 +159,10 @@ else:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Expected ED Encounters / Yr", f"{sf['annual_ed_encounters']:,}")
     c2.metric("Per Day", sf['encounters_per_day'])
-    c3.metric("Admission-Level Acuity / Yr", f"{sf['admission_level_per_year']:,}")
-    c4.metric("Transfer-Level / Yr", f"{sf['transfer_level_per_year']:,}")
+    c3.metric("Admission-Level Acuity / Yr", sf['admission_level_per_year'])
+    c4.metric("Transfer-Level / Yr", sf['transfer_level_per_year'])
 
-    st.subheader("Annual encounter value envelope")
+    st.subheader("Annual Encounter Value Envelope")
     st.caption("Admission-level encounters only (11.5% of visits, NHAMCS 2022). "
                f"Per-archetype estimates: {sf['estimates_source']}.")
     e1, e2, e3 = st.columns(3)
@@ -156,12 +170,12 @@ else:
     e2.metric("Central", f"${sf['envelope_central']:,}")
     e3.metric("High", f"${sf['envelope_high']:,}")
 
-    st.subheader("Population by age band")
+    st.subheader("Population by Age Band")
     st.bar_chart(sf['age_bands'])
 
-    st.subheader("Funding pathway (NM Rural Health Transformation Program)")
+    st.subheader("Funding Pathway (NM Rural Health Transformation Program)")
     st.markdown(
-        "| RHT stream | Project component |\n"
+        "| RHT Stream | Project Component |\n"
         "|---|---|\n"
         "| Rural Health Innovation Fund | MCDA siting analysis (this site) |\n"
         "| Healthy Horizons | Triage & diagnostic support tool |\n"
@@ -173,6 +187,6 @@ else:
                "value envelope and operating cost is the quantified funding "
                "ask — not a weakness of the proposal.")
 
-    st.subheader("Caveats (stated, not hidden)")
+    st.subheader("Caveats (Stated, Not Hidden)")
     for cv in sf['caveats']:
         st.markdown(f"- {cv}")

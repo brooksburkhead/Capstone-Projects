@@ -1,4 +1,3 @@
-```python
 # triage_app.py — run locally:  python -m streamlit run triage_app.py
 import streamlit as st
 import json

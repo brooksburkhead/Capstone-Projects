@@ -176,5 +176,3 @@ else:
     st.subheader("Caveats (stated, not hidden)")
     for cv in sf['caveats']:
         st.markdown(f"- {cv}")
-
-```

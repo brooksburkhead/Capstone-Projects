@@ -22,9 +22,9 @@ with open(APP_DIR / 'triage_cohort.json') as f:
     cohort = json.load(f)
 
 # --- View selector (patient triage vs. site sustainability) ---
-view = st.sidebar.radio("View", ["Patient triage", "Site sustainability"])
+view = st.sidebar.radio("View", ["Patient Triage", "Site Sustainability"])
 
-if view == "Patient triage":
+if view == "Patient Triage":
     # --- Patient selector ---
     case = st.sidebar.radio("Select patient case", list(cohort.keys()))
     p = cohort[case]
@@ -111,14 +111,14 @@ if view == "Patient triage":
                 "(This is the conservative behavior, not an error.)")
     else:
         v1, v2 = st.columns(2)
-        v1.metric("Encounter value estimate", f"${value:,.0f}")
+        v1.metric("Encounter Value Estimate", f"${value:,.0f}")
         v2.metric("MDC", mdc)
         st.caption(f"Mapping coverage: {mapped} of {total_c} conditions "
                    "mapped to billable ICD-10 codes; estimates are "
                    "conservative. MDC method distinguishes body systems, "
                    "not severity — cases sharing an MDC share an estimate.")
     st.caption("↳ These per-encounter values, weighted by county demand, "
-               "roll up into the **Site sustainability** view.")
+               "roll up into the **Site Sustainability** view.")
 
 else:
     # =========================================================================
